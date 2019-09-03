@@ -1,23 +1,59 @@
 Cannon c;
 ArrayList<CannonBall> balls = new ArrayList<CannonBall>();
+PVector gravity;
+int floor;
 
 void setup() {
   size(1400, 600);
   imageMode(CENTER);
   c = new Cannon();
+  gravity = new PVector(0, 0.2);
+  floor = height-50;
 }
 
 void draw() {
   background(255);
   c.move();
   c.display();
-  for (CannonBall b : balls) {
-    b.display();
+  for (int i = balls.size()-1; i >= 0; i--) {
+    balls.get(i).addForce(gravity);
+    balls.get(i).addForce(wind(balls.get(i)));
+    balls.get(i).move();
+    if (!balls.get(i).check()) {
+      balls.get(i).display(); //Hvis bolden ikke er uden for skærmen og er blevet slettet
+    }
   }
-  line(0, height-50, width, height-50);
+  line(0, floor, width, floor);
 }
 
 
 void mousePressed() {
-  balls.add(new CannonBall(c.location));
+  PVector heading = c.direction.copy();
+  if (heading.x > 0 && heading.y < 0) {
+
+    heading.normalize();
+    heading.mult(15);
+
+    PVector loc = c.location.copy();
+
+    loc.x += cos(c.angle-c.angleOffset)*43;
+    loc.y += sin(c.angle-c.angleOffset)*13;
+
+    balls.add(new CannonBall(loc, heading));
+  }
+}
+
+
+
+PVector wind(CannonBall b) {
+  float c = 0.002;
+  float speed = b.velocity.mag();
+  float dragMagnitude = c * speed * speed;
+
+  PVector drag = b.velocity.copy();
+  drag.mult(-1);
+  drag.normalize();
+  drag.mult(dragMagnitude/2);
+
+  return drag;
 }
