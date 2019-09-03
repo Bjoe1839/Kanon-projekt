@@ -1,14 +1,18 @@
 Cannon c;
 ArrayList<CannonBall> balls = new ArrayList<CannonBall>();
 PVector gravity;
-int floor;
+int floor, chargeSize;
+float charge;
 
 void setup() {
   size(1400, 600);
   imageMode(CENTER);
+  cursor(CROSS);
+  
   c = new Cannon();
   gravity = new PVector(0, 0.2);
   floor = height-50;
+  chargeSize = 50;
 }
 
 void draw() {
@@ -20,19 +24,30 @@ void draw() {
     balls.get(i).addForce(wind(balls.get(i)));
     balls.get(i).move();
     if (!balls.get(i).check()) {
-      balls.get(i).display(); //Hvis bolden ikke er uden for skærmen og er blevet slettet
+      balls.get(i).display(); //Hvis bolden ikke er uden for skærmen og er blevet slettet skal den vises
     }
   }
+
   line(0, floor, width, floor);
+
+  if (mousePressed) {
+    charge += 0.1;
+    if (charge > TWO_PI) charge = TWO_PI;
+    strokeWeight(5);
+    arc(mouseX, mouseY, chargeSize, chargeSize, -HALF_PI, charge-HALF_PI);
+    strokeWeight(1);
+  } else {
+    charge = 0;
+  }
 }
 
 
-void mousePressed() {
+void mouseReleased() {
   PVector heading = c.direction.copy();
   if (heading.x > 0 && heading.y < 0) {
 
     heading.normalize();
-    heading.mult(15);
+    heading.mult(charge*5);
 
     PVector loc = c.location.copy();
 
@@ -42,7 +57,6 @@ void mousePressed() {
     balls.add(new CannonBall(loc, heading));
   }
 }
-
 
 
 PVector wind(CannonBall b) {
