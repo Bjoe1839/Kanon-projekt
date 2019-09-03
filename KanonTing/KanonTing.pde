@@ -31,7 +31,7 @@ void draw() {
   line(0, floor, width, floor);
 
   if (mousePressed) {
-    charge += 0.1;
+    charge += 0.05;
     if (charge > TWO_PI) charge = TWO_PI;
     strokeWeight(5);
     arc(mouseX, mouseY, chargeSize, chargeSize, -HALF_PI, charge-HALF_PI);
@@ -43,6 +43,7 @@ void draw() {
 
 
 void mouseReleased() {
+  //Ny bold
   PVector heading = c.direction.copy();
   if (heading.x > 0 && heading.y < 0) {
 
@@ -60,6 +61,7 @@ void mouseReleased() {
 
 
 PVector wind(CannonBall b) {
+  //Vindmodstand
   float c = 0.002;
   float speed = b.velocity.mag();
   float dragMagnitude = c * speed * speed;
