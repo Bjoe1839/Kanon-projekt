@@ -3,7 +3,7 @@ class CannonBall {
   int size;
 
   PVector location, velocity, acceleration;
-  float angle, aVelocity;
+  float angle;
 
   CannonBall(PVector loc, PVector dir) {
     cannonBall = loadImage("CannonBall.png");
@@ -37,7 +37,7 @@ class CannonBall {
   }
 
   boolean check() {
-    if (location.x > width+size/2 || location.x < -size/2) {
+    if (location.x > width+size/2 || velocity.mag() == 0) {
       balls.remove(this);
       return true;
     } else {
